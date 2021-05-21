@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AndroidComposeStudyDemo</string>
+    <string name="title_activity_basis_study">BasisStudyActivity</string>
+    <string name="title_activity_layout_study">LayoutStudyActivity</string>
+</resources>
