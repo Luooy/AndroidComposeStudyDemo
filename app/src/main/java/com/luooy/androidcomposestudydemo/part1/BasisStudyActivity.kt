@@ -220,7 +220,7 @@ fun ExpandingCard(title: String, body: String) {
                         onClick = { expanded.value = false },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.ic_baseline_expand_less_24),
                             contentDescription = null
                         )
@@ -231,7 +231,7 @@ fun ExpandingCard(title: String, body: String) {
                         onClick = { expanded.value = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Image(
+                        Icon(
                             painter = painterResource(R.drawable.ic_baseline_expand_more_24),
                             contentDescription = null
                         )
