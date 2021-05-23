@@ -10,15 +10,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ListAlt
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.rememberCoroutineScope
@@ -92,7 +90,9 @@ fun PhotographerCard(modifier: Modifier = Modifier) {
 
 @Composable
 fun ScaffoldCompose() {
+    val listSize = 100
     val scaffoldState = rememberScaffoldState()
+    val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
@@ -117,12 +117,35 @@ fun ScaffoldCompose() {
                 }
             )
         },
+        floatingActionButton = {
+            Column {
+                FloatingActionButton(onClick = {
+                    coroutineScope.launch {
+                        scrollState.animateScrollToItem(0)
+                    }
+                }) {
+                    Icon(imageVector = Icons.Default.ArrowUpward, contentDescription = null)
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                FloatingActionButton(onClick = {
+                    coroutineScope.launch {
+                        scrollState.animateScrollToItem(listSize - 1)
+                    }
+                }) {
+                    Icon(imageVector = Icons.Default.ArrowDownward, contentDescription = null)
+                }
+            }
+        },
         drawerContent = { DrawerContent { coroutineScope.launch { scaffoldState.drawerState.close() } } }
     ) { innerPadding ->
         BodyContent(
             Modifier
                 .padding(innerPadding)
-                .padding(8.dp)
+                .padding(8.dp),
+            scrollState,
+            listSize = listSize
         )
     }
 }
@@ -131,9 +154,9 @@ fun ScaffoldCompose() {
 fun DrawerContent(onClick: () -> Unit) {
     Surface {
         Column {
-            Row {
+            Row(modifier = Modifier.padding(16.dp)) {
                 Image(
-                    painter = painterResource(R.mipmap.ic_launcher_round),
+                    painter = painterResource(R.drawable.ic_baseline_android_24),
                     contentDescription = null, // decorative
                     colorFilter = ColorFilter.tint(MaterialTheme.colors.primary)
                 )
@@ -197,16 +220,15 @@ fun DrawerButton(
 }
 
 @Composable
-fun BodyContent(modifier: Modifier = Modifier) {
+fun BodyContent(modifier: Modifier = Modifier, scrollState: LazyListState, listSize: Int) {
     Column(modifier = modifier) {
         PhotographerCard()
-        SimpleList()
+        SimpleList(scrollState, listSize)
     }
 }
 
 @Composable
-fun SimpleList() {
-    val scrollState = rememberLazyListState()
+fun SimpleList(scrollState: LazyListState, listSize: Int) {
 
     LazyColumn(state = scrollState, modifier = Modifier.fillMaxWidth()) {
         items(100) {
@@ -222,7 +244,9 @@ fun ImageListItem(index: Int) {
         Column {
             Image(
                 painter = rememberCoilPainter(
-                    request = "https://source.unsplash.com/random"
+                    request = "https://source.unsplash.com/random",
+                    fadeIn = true,
+                    previewPlaceholder = R.drawable.ic_baseline_android_24
                 ),
                 contentDescription = null,
                 modifier = Modifier
