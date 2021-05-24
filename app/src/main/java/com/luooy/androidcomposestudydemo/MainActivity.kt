@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.luooy.androidcomposestudydemo.part1.BasisStudyActivity
+import com.luooy.androidcomposestudydemo.part1.CustomLayoutStudyActivity
 import com.luooy.androidcomposestudydemo.part1.LayoutStudyActivity
 import com.luooy.androidcomposestudydemo.ui.theme.AndroidComposeStudyDemoTheme
 
@@ -68,6 +69,18 @@ fun MainView() {
             ) {
                 Text(
                     text = "Layout study", modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+            }
+        }
+        item {
+            TextButton(
+                onClick = { CustomLayoutStudyActivity.startCustomLayoutStudyActivity(context) },
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(start = 16.dp)
+            ) {
+                Text(
+                    text = "Custom layout study", modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
             }
