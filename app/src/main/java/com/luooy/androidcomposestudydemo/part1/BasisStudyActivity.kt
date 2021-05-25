@@ -8,10 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -61,7 +59,8 @@ class BasisStudyActivity : ComponentActivity() {
 @Composable
 fun NewStory() {
     MaterialTheme {
-        Column(Modifier.padding(16.dp)) {
+        Column(
+            Modifier.padding(16.dp)) {
             Image(
                 painter = painterResource(id = R.mipmap.cyberpunk2077_cdn_wallpaper),
                 contentDescription = null,
@@ -77,7 +76,7 @@ fun NewStory() {
                         "in Shark Fin Cove, and a few of the " +
                         "sights I saw",
                 style = typography.h6,
-                color = colors.surface
+                color = colors.error
             )
             Text("Davenport, California", style = typography.body2.copy(color = Color.Yellow))
             Text("December 2018", style = typography.body2)
@@ -245,7 +244,7 @@ fun ExpandingCard(title: String, body: String) {
 @Preview
 @Composable
 fun PreviewContentView() {
-    Column {
+    Column() {
         NewStory()
 
         ContainSpacerView {
