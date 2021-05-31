@@ -3,4 +3,5 @@
     <string name="title_activity_basis_study">BasisStudyActivity</string>
     <string name="title_activity_layout_study">LayoutStudyActivity</string>
     <string name="title_activity_custom_layout_study">CustomLayoutStudyActivity</string>
+    <string name="title_activity_basic_state">BasicStateActivity</string>
 </resources>

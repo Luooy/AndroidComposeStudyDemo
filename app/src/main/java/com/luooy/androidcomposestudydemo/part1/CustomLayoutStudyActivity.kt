@@ -3,9 +3,9 @@ package com.luooy.androidcomposestudydemo.part1
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -15,11 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.*
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,7 +28,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
+import androidx.constraintlayout.compose.Dimension
 import com.luooy.androidcomposestudydemo.R
+import com.luooy.androidcomposestudydemo.part1.ui.theme.pink
 import com.luooy.androidcomposestudydemo.ui.theme.AndroidComposeStudyDemoTheme
 import kotlin.math.max
 
@@ -221,6 +225,9 @@ fun Modifier.firstBaselineToTop(
 fun ConstraintLayoutContent() {
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (avatar, name, desc, star) = createRefs()
+        val starColor = remember { mutableStateOf(false) }
+        val iconColor = animateColorAsState(if (starColor.value) pink else Color.White)
+
         Image(
             painter = painterResource(id = R.mipmap.cyberpunk2077_cdn_wallpaper),
             contentDescription = "avatar",
@@ -246,14 +253,110 @@ fun ConstraintLayoutContent() {
                 })
         }
 
-        Button(onClick = { /*TODO*/ }, modifier = Modifier.constrainAs(star) {
-            end.linkTo(parent.end, margin = 16.dp)
-            top.linkTo(parent.top)
-            bottom.linkTo(parent.bottom)
-            start.linkTo(desc.end, margin = 16.dp)
-        }) {
-            Icon(imageVector = Icons.Default.Favorite, contentDescription = null)
+        Button(
+            onClick = { starColor.value = starColor.value.not() },
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(8.dp))
+                .constrainAs(star) {
+                    end.linkTo(parent.end, margin = 16.dp)
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(desc.end, margin = 16.dp)
+                }) {
+
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = null,
+                tint = iconColor.value
+            )
+            Spacer(modifier = Modifier.width(4.dp))
             Text(text = "star")
+        }
+    }
+}
+
+@Composable
+fun BarrierConstraintLayout() {
+    ConstraintLayout {
+        // Creates references for the three composables
+        // in the ConstraintLayout's body
+        val (button1, button2, text) = createRefs()
+
+        Button(
+            onClick = { /* Do something */ },
+            modifier = Modifier.constrainAs(button1) {
+                top.linkTo(parent.top, margin = 16.dp)
+            }
+        ) {
+            Text("Button 1")
+        }
+
+        Text("text", Modifier.constrainAs(text) {
+            top.linkTo(button1.bottom, margin = 16.dp)
+            centerAround(button1.end)
+        })
+
+        val barrier = createEndBarrier(button1, text)
+        Button(
+            onClick = { /* Do something */ },
+            modifier = Modifier.constrainAs(button2) {
+                top.linkTo(parent.top, margin = 16.dp)
+                start.linkTo(barrier)
+            }
+        ) {
+            Text("Button 2")
+        }
+    }
+}
+
+@Composable
+fun LargeConstraintLayout() {
+    ConstraintLayout {
+        val text = createRef()
+
+        val guideline = createGuidelineFromStart(fraction = 0.5f)
+        Text(
+            "This is a very very very very very very very long text",
+            Modifier.constrainAs(text) {
+                linkTo(start = guideline, end = parent.end)
+                width = Dimension.preferredWrapContent
+            }
+        )
+    }
+}
+
+@Composable
+fun DecoupledConstraintLayout() {
+    BoxWithConstraints {
+        val constraints = if (maxWidth < maxHeight) {
+            decoupledConstraints(margin = 16.dp) // Portrait constraints
+        } else {
+            decoupledConstraints(margin = 32.dp) // Landscape constraints
+        }
+
+        ConstraintLayout(constraints) {
+            Button(
+                onClick = { /* Do something */ },
+                modifier = Modifier.layoutId("button")
+            ) {
+                Text("Button")
+            }
+
+            Text("Text", Modifier.layoutId("text"))
+        }
+    }
+}
+
+private fun decoupledConstraints(margin: Dp): ConstraintSet {
+    return ConstraintSet {
+        val button = createRefFor("button")
+        val text = createRefFor("text")
+
+        constrain(button) {
+            top.linkTo(parent.top, margin= margin)
+        }
+        constrain(text) {
+            top.linkTo(button.bottom, margin)
         }
     }
 }
@@ -271,17 +374,33 @@ fun CustomLayoutPreview() {
                 CustomLayoutText()
             }
 
-            Row(
-                Modifier.horizontalScroll(rememberScrollState())
-            ) {
-                StaggeredGrid {
-                    for (topic in topics) {
-                        ChipView(modifier = Modifier.padding(8.dp), text = topic)
+            ContainSpacerView {
+                Row(
+                    Modifier.horizontalScroll(rememberScrollState())
+                ) {
+                    StaggeredGrid {
+                        for (topic in topics) {
+                            ChipView(modifier = Modifier.padding(8.dp), text = topic)
+                        }
                     }
                 }
             }
 
-            ConstraintLayoutContent()
+            ContainSpacerView {
+                ConstraintLayoutContent()
+            }
+
+            ContainSpacerView {
+                BarrierConstraintLayout()
+            }
+
+            ContainSpacerView {
+                LargeConstraintLayout()
+            }
+
+            ContainSpacerView {
+                DecoupledConstraintLayout()
+            }
         }
     }
 }

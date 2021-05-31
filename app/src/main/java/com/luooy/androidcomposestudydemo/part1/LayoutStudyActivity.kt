@@ -43,7 +43,7 @@ class LayoutStudyActivity : ComponentActivity() {
             AndroidComposeStudyDemoTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    DefaultPreview()
+                    DefaultLayoutPreview()
                 }
             }
         }
@@ -261,7 +261,7 @@ fun ImageListItem(index: Int) {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun DefaultLayoutPreview() {
     AndroidComposeStudyDemoTheme {
         ScaffoldCompose()
     }

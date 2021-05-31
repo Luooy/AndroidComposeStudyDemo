@@ -113,7 +113,6 @@ fun ListView(myList: List<String>, onClick: (String) -> Unit) {
             )
         }
         /*itemsIndexed(myList) { index, data ->
-            Log.e("---------------------",isSelectedList.value.toString())
             Text(
                 "Item: $data",
                 textAlign = TextAlign.Center,

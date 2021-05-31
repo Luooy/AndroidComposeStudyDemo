@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidComposeStudyDemo">
         <activity
+            android:name=".part2.BasicStateActivity"
+            android:exported="true"
+            android:label="@string/title_activity_basic_state"
+            android:theme="@style/Theme.AndroidComposeStudyDemo.NoActionBar" />
+        <activity
             android:name=".part1.CustomLayoutStudyActivity"
             android:exported="true"
             android:label="@string/title_activity_custom_layout_study"
